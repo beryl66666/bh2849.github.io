@@ -1,51 +1,49 @@
 ---
-title: "Plotly"
+title: "Airbnb Dashboard"
 output: 
-  html_document:
-    toc: true
-    toc_float: true
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 ---
 
-We are going to make some plotly plots. 
-
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(p8105.datasets)
-
+library(flexdashboard)
 library(plotly)
 ```
 
-Let's get some data
-
-```{r}
+```{r include = FALSE}
 data(nyc_airbnb)
 
 nyc_airbnb = 
   nyc_airbnb %>% 
   mutate(rating = review_scores_location / 2) %>%
   select(
-    borough = neighbourhood_group, neighbourhood, rating, price, room_type, lat, long) %>%
+    neighbourhood_group, neighbourhood, rating, price, room_type, lat, long) %>%
   filter(
     !is.na(rating), 
-    borough == "Manhattan",
+    neighbourhood_group == "Manhattan",
     room_type == "Entire home/apt",
     price %in% 100:500)
 ```
+Column {data-width=650}
+-----------------------------------------------------------------------
 
-Let's make a scatterplot!!
+### Chart A
 
 ```{r}
 nyc_airbnb %>%
   mutate(text_label = str_c("Price: $", price, "\nRating: ", rating)) %>% 
-  # ‘\n means land break between two text labels
   plot_ly(
     x = ~lat, y = ~long, type = "scatter", mode = "markers",
     color = ~price, text = ~text_label, alpha = 0.5)
-
-# plot_ly and gg_plot are similar, but they have difference in ()
-#text-label 让图形里每个点都可以拥有text解释，when 鼠标移动到那个点的时候
 ```
 
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
 
 ```{r}
 nyc_airbnb %>% 
@@ -53,7 +51,7 @@ nyc_airbnb %>%
   plot_ly(y = ~price, color = ~neighbourhood, type = "box", colors = "viridis")
 ```
 
-We can also make barchar 
+### Chart C
 
 ```{r}
 nyc_airbnb %>% 
@@ -62,17 +60,3 @@ nyc_airbnb %>%
   plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = "bar", colors = "viridis")
 ```
 
-```{r}
-scatter_ggplot = 
-  nyc_airbnb %>%
-  ggplot(aes(x = lat, y = long, color = price)) +
-  geom_point(alpha = 0.25) +
-  coord_cartesian()
-
-ggplotly(scatter_ggplot)
-```
-
-
-## create a dashboard ...
-
-Not here though. 
