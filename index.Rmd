@@ -14,3 +14,7 @@ Here's some text. I use [google](https://www.google.com/) to do data science.
 
 Here is my phote. 
 ![](images/me.jpeg)
+
+## New section 
+
+[Here is](plotly.html) a page with plotly plots.
